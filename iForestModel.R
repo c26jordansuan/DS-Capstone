@@ -219,3 +219,28 @@ ggplot(df_out, aes(z_robust, iforest_score)) +
     x = "Robust deviation vs route/hour expected duration",
     y = "iForest score"
   )
+
+# Determine which streets these anomalies occur: 
+anomaly_routes <- read.csv("boston_bluebikes_iforest_scored.csv")
+
+# How many different street combinations are in the dataset?
+num_combinations_anomaly <- anomaly_routes %>%
+  filter(iforest_anom == 1) %>%
+  distinct(start_station_name, end_station_name) %>%
+  nrow()
+num_combinations_anomaly
+
+# What are the exact pairs?
+start_end_anomaly <- anomaly_routes %>%
+  filter(iforest_anom == 1) %>%
+  distinct(start_station_name, end_station_name)
+
+head(start_end_anomaly)
+
+# What are the most common routes?
+top_anomaly <- anomaly_routes %>%
+  filter(iforest_anom == 1) %>%
+  count(start_station_name, end_station_name, sort = TRUE)
+
+head(top_anomaly, 10)
+
